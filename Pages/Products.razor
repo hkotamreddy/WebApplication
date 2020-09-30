@@ -1,0 +1,55 @@
+﻿@page "/products"
+@inject HttpClient Http
+<h1>Products</h1>
+<p>This component demonstrates fetching data from the server.</p>
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Using @framework </p>
+    <p>Elapsed Time in milliseconds = @timeElapsed</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Sale Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Sku</td>
+                    <td>@product.Name</td>
+                    <td>@product.SalePrice</td>
+                </tr>
+            }
+        </tbody>
+    </table>   
+}
+@code {
+    private string version = System.Environment.Version.ToString();
+    private string framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
+    private Product[] products;
+    private int timeElapsed;
+    protected override async Task OnInitializedAsync()
+    {
+        DateTime date1 = DateTime.Now;  
+
+          
+
+        
+        products = await Http.GetFromJsonAsync<Product[]>("sample-data/BestBuyProducts.json");
+        DateTime date2 = DateTime.Now; 
+        timeElapsed = ((TimeSpan) (date2 - date1)).Milliseconds;
+    }
+    public class Product 
+    {
+        public int Sku {get; set;}
+        public string Name {get; set;}
+        public float SalePrice {get; set;}
+    }
+}
